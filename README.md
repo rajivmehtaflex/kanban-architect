@@ -34,48 +34,34 @@ Once installed, you can simply provide the agent with a requirements file:
 2. **Decompose:** `hermes kanban decompose <task_id>`
 3. **Execute:** `hermes gateway start` $\rightarrow$ `hermes kanban watch`
 
+## 🌟 Consuming Example: Building "TodoMaster" (TUI Perspective)
+
+Here is how a human interacts with the Hermes TUI to build a full-stack Todo app with **React + FastAPI + SQLite** using this skill.
+
+### 1. The Setup
+The user uploads or creates a `prd.md` file in the workspace detailing the TodoMaster requirements (CRUD, categories, due-dates).
+
+### 2. The Interaction Flow
+
+**Phase A: Triage (Defining the Goal)**
+**User Prompt:** *"I've provided `prd.md`. Please use the Kanban Architect skill to create a triage card for this project."*
+**Agent Action:** The agent reads the PRD and executes `hermes kanban create --triage`.
+**TUI Result:** A new card appears in the **Triage** column.
+
+**Phase B: Decomposition (Building the Workforce)**
+**User Prompt:** *"Now, decompose the root triage card into a specialized workforce DAG."*
+**Agent Action:** The agent executes `hermes kanban decompose <task_id>`.
+**TUI Result:** The single triage card vanishes, and a graph of 4-6 specialized tasks (DB $\rightarrow$ Backend $\rightarrow$ Frontend $\rightarrow$ QA) appears in the **Todo** column, correctly linked by dependencies.
+
+**Phase C: Execution (Launching the Build)**
+**User Prompt:** *"Launch the gateway and monitor the build progress."*
+**Agent Action:** The agent executes `hermes gateway start` and `hermes kanban watch`.
+**TUI Result:** You see tasks moving in real-time: `Ready` $\rightarrow$ `Running` $\rightarrow$ `Done`.
+
+### 3. Final Result
+**Agent Report:** *"The TodoMaster app is now fully implemented. All integration tests passed, and the app is accessible at localhost:5173. The root task is marked as Done."*
+
 ## 📐 Architecture
 - **Paradigm:** Runtime-Structured Orchestration.
 - **State:** Durable SQLite backend via `kanban_db`.
 - **Isolation:** Uses Git Worktrees for parallel development.
-
-## 🌟 Consuming Example: Building "TodoMaster"
-
-Here is a real-life step-by-step example of how an agent uses this skill to build a full-stack Todo app with **React + FastAPI + SQLite**.
-
-### 1. The Input
-The user provides a `prd.md` file:
-> "Build TodoMaster: A Todo app. Tech stack: React (Frontend), FastAPI (Backend), SQLite (DB). Features: CRUD todos, categories with colors, and due-date tracking."
-
-### 2. Step-by-Step Agent Execution
-
-**Step A: Triage (The Entry Point)**
-The agent extracts the goal and creates a triage card:
-```bash
-hermes kanban create "Build TodoMaster Full-stack App" \n  --triage \n  --body "Build a Todo app with React, FastAPI, and SQLite. Must include CRUD, color-coded categories, and due-date tracking."
-```
-*Result: Task `t_root_001` is created in the Triage column.*
-
-**Step B: Autonomous Decomposition (The Magic)**
-The agent invokes the decomposition engine to create the specialized workforce:
-```bash
-hermes kanban decompose t_root_001
-```
-*The agent (as the Architect) generates a DAG:*
-- `t_002`: **DB Expert** $ightarrow$ Create SQLite schema & tables.
-- `t_003`: **Backend Dev** $ightarrow$ Implement FastAPI endpoints (Depends on `t_002`).
-- `t_004`: **Frontend Dev** $ightarrow$ Build React UI & API integration (Depends on `t_003`).
-- `t_005`: **QA Agent** $ightarrow$ Write integration tests (Depends on `t_003` & `t_004`).
-
-**Step C: Orchestrated Execution**
-The agent starts the dispatcher and monitors the pipeline:
-```bash
-hermes gateway start
-hermes kanban watch
-```
-*Execution Flow:*
-`DB Expert` finishes $ightarrow$ `Backend Dev` starts $ightarrow$ `Frontend Dev` starts $ightarrow$ `QA Agent` validates $ightarrow$ `Orchestrator` performs final review.
-
-### 3. Final Result
-The agent reports: 
-*"The TodoMaster app is now fully implemented. All integration tests passed, and the app is accessible at localhost:5173. The root task `t_root_001` is marked as Done."*
