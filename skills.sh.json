@@ -1,0 +1,13 @@
+{
+  "$schema": "https://skills.sh",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Agent Orchestration",
+      "description": "Autonomous decomposition and workforce management tools",
+      "skills": [
+        "kanban-architect"
+      ]
+    }
+  ]
+}
