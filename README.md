@@ -57,16 +57,50 @@ Clone this repository:
 gh repo clone rajivmehtaflex/kanban-architect
 ```
 
-Copy the skill into your Hermes skills directory:
+Install/update the skill into your Hermes skills directory:
 
 ```bash
-cp -r kanban-architect/skills/* ~/.hermes/skills/
+mkdir -p ~/.hermes/skills/devops
+rm -rf ~/.hermes/skills/devops/kanban-architect
+cp -r kanban-architect/skills/kanban-architect ~/.hermes/skills/devops/kanban-architect
 ```
 
 Then start a new Hermes session or reload skills if your platform supports it:
 
 ```text
 /reload-skills
+```
+
+Verify the canonical lowercase skill name appears:
+
+```bash
+hermes skills list | grep -i kanban-architect
+```
+
+Expected output should contain:
+
+```text
+kanban-architect        devops        local        local        enabled
+```
+
+### Fix old local installs
+
+If `hermes skills list` shows an old display name such as `Hermes Kanban Architect`, you likely have a legacy local skill folder with frontmatter like `name: "Hermes Kanban Architect"`. Move old duplicates out of the active skills tree, then reload skills:
+
+```bash
+mkdir -p ~/.hermes/skill_backups
+[ -d ~/.hermes/skills/hermes-kanban-architect ] && \
+  mv ~/.hermes/skills/hermes-kanban-architect ~/.hermes/skill_backups/hermes-kanban-architect-legacy-$(date +%Y%m%d_%H%M%S)
+[ -d ~/.hermes/skills/kanban-architect ] && \
+  mv ~/.hermes/skills/kanban-architect ~/.hermes/skill_backups/kanban-architect-duplicate-$(date +%Y%m%d_%H%M%S)
+rm -f ~/.hermes/.skills_prompt_snapshot.json
+hermes skills list | grep -i kanban-architect
+```
+
+After this, use:
+
+```text
+/skill kanban-architect
 ```
 
 ## TUI Usage
