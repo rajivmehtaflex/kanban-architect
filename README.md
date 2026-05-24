@@ -38,3 +38,44 @@ Once installed, you can simply provide the agent with a requirements file:
 - **Paradigm:** Runtime-Structured Orchestration.
 - **State:** Durable SQLite backend via `kanban_db`.
 - **Isolation:** Uses Git Worktrees for parallel development.
+
+## 🌟 Consuming Example: Building "TodoMaster"
+
+Here is a real-life step-by-step example of how an agent uses this skill to build a full-stack Todo app with **React + FastAPI + SQLite**.
+
+### 1. The Input
+The user provides a `prd.md` file:
+> "Build TodoMaster: A Todo app. Tech stack: React (Frontend), FastAPI (Backend), SQLite (DB). Features: CRUD todos, categories with colors, and due-date tracking."
+
+### 2. Step-by-Step Agent Execution
+
+**Step A: Triage (The Entry Point)**
+The agent extracts the goal and creates a triage card:
+```bash
+hermes kanban create "Build TodoMaster Full-stack App" \n  --triage \n  --body "Build a Todo app with React, FastAPI, and SQLite. Must include CRUD, color-coded categories, and due-date tracking."
+```
+*Result: Task `t_root_001` is created in the Triage column.*
+
+**Step B: Autonomous Decomposition (The Magic)**
+The agent invokes the decomposition engine to create the specialized workforce:
+```bash
+hermes kanban decompose t_root_001
+```
+*The agent (as the Architect) generates a DAG:*
+- `t_002`: **DB Expert** $ightarrow$ Create SQLite schema & tables.
+- `t_003`: **Backend Dev** $ightarrow$ Implement FastAPI endpoints (Depends on `t_002`).
+- `t_004`: **Frontend Dev** $ightarrow$ Build React UI & API integration (Depends on `t_003`).
+- `t_005`: **QA Agent** $ightarrow$ Write integration tests (Depends on `t_003` & `t_004`).
+
+**Step C: Orchestrated Execution**
+The agent starts the dispatcher and monitors the pipeline:
+```bash
+hermes gateway start
+hermes kanban watch
+```
+*Execution Flow:*
+`DB Expert` finishes $ightarrow$ `Backend Dev` starts $ightarrow$ `Frontend Dev` starts $ightarrow$ `QA Agent` validates $ightarrow$ `Orchestrator` performs final review.
+
+### 3. Final Result
+The agent reports: 
+*"The TodoMaster app is now fully implemented. All integration tests passed, and the app is accessible at localhost:5173. The root task `t_root_001` is marked as Done."*
